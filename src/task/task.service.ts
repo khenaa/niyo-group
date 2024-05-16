@@ -17,6 +17,10 @@ export class TaskService {
   ) {}
 
   async findAll(query: Query): Promise<Task[]> {
+    const resultPerPage = 10;
+    const currentPage = Number(query.page) || 1;
+    const skip = resultPerPage * (currentPage - 1);
+
     const search = query.search
       ? {
           title: {
@@ -25,7 +29,10 @@ export class TaskService {
           },
         }
       : {};
-    const tasks = await this.taskModel.find({ ...search });
+    const tasks = await this.taskModel
+      .find({ ...search })
+      .limit(resultPerPage)
+      .skip(skip);
     return tasks;
   }
 
