@@ -6,19 +6,22 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
+import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './schemas/task.schema';
-import { TaskService } from './task.service';
+
+import { Query as ExpressQuery } from 'express-serve-static-core';
 
 @Controller('tasks')
 export class TaskController {
   constructor(private taskService: TaskService) {}
 
   @Get()
-  async getAllTasks(): Promise<Task[]> {
-    return this.taskService.findAll();
+  async getAllTasks(@Query() query: ExpressQuery): Promise<Task[]> {
+    return this.taskService.findAll(query);
   }
 
   @Post()

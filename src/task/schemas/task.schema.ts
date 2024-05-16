@@ -1,15 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export enum Priority {
-  HIGH = 'High',
-  MEDIUM = 'Medium',
-  LOW = 'Low',
+  HIGH = 'high',
+  MEDIUM = 'medium',
+  LOW = 'low',
 }
 
 export enum Status {
-  PENDING = 'Pending',
-  ACTIVE = 'Active',
-  COMPLETED = 'Completed',
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  COMPLETED = 'completed',
 }
 
 @Schema({

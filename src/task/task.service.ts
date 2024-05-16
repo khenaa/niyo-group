@@ -7,6 +7,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Task } from './schemas/task.schema';
 
+import { Query } from 'express-serve-static-core';
+
 @Injectable()
 export class TaskService {
   constructor(
@@ -14,8 +16,16 @@ export class TaskService {
     private taskModel: mongoose.Model<Task>,
   ) {}
 
-  async findAll(): Promise<Task[]> {
-    const tasks = await this.taskModel.find();
+  async findAll(query: Query): Promise<Task[]> {
+    const search = query.search
+      ? {
+          title: {
+            $regex: query.search,
+            $options: 'i',
+          },
+        }
+      : {};
+    const tasks = await this.taskModel.find({ ...search });
     return tasks;
   }
 
