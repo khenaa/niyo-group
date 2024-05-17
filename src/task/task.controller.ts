@@ -29,7 +29,7 @@ export class TaskController {
     @Body()
     task: CreateTaskDto,
   ): Promise<Task> {
-    return this.taskService.create(task);
+    return await this.taskService.create(task);
   }
 
   @Get(':id')
@@ -37,7 +37,7 @@ export class TaskController {
     @Param('id')
     id: string,
   ): Promise<Task> {
-    return this.taskService.findById(id);
+    return await this.taskService.findById(id);
   }
 
   @Patch(':id')
@@ -47,7 +47,7 @@ export class TaskController {
     @Body()
     task: UpdateTaskDto,
   ): Promise<Task> {
-    return this.taskService.updateById(id, task);
+    return await this.taskService.updateById(id, task);
   }
 
   @Delete(':id')
@@ -55,6 +55,6 @@ export class TaskController {
     @Param('id')
     id: string,
   ): Promise<Task> {
-    return this.taskService.deleteById(id);
+    return await this.taskService.deleteById(id);
   }
 }

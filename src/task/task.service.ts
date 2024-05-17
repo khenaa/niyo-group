@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -45,13 +47,16 @@ export class TaskService {
     const isValidId = mongoose.isValidObjectId(id);
 
     if (!isValidId) {
-      throw new BadRequestException('incorrect id');
+      throw new HttpException('Incorrect ID', HttpStatus.BAD_REQUEST);
     }
 
     const task = await this.taskModel.findById(id);
 
     if (!task) {
-      throw new NotFoundException('task not found');
+      throw new HttpException(
+        'task not found',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
     return task;
   }
