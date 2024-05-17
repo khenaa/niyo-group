@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { User } from 'src/user/schemas/user.schema';
 
 export enum Priority {
   HIGH = 'high',

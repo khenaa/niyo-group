@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -14,17 +15,21 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './schemas/task.schema';
 
 import { Query as ExpressQuery } from 'express-serve-static-core';
+import { JwtAuthGuard } from '../guards/jwt.guard';
 
 @Controller('tasks')
 export class TaskController {
   constructor(private taskService: TaskService) {}
 
   @Get()
-  async getAllTasks(@Query() query: ExpressQuery): Promise<Task[]> {
+  async getAllTasks(
+    @Query() query: ExpressQuery,
+  ): Promise<{ total_tasks: number; data: Task[] }> {
     return this.taskService.findAll(query);
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createTask(
     @Body()
     task: CreateTaskDto,
@@ -41,6 +46,7 @@ export class TaskController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   async updateTask(
     @Param('id')
     id: string,
@@ -51,6 +57,7 @@ export class TaskController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async deleteTask(
     @Param('id')
     id: string,

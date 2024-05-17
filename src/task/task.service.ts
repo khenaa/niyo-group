@@ -18,7 +18,7 @@ export class TaskService {
     private taskModel: mongoose.Model<Task>,
   ) {}
 
-  async findAll(query: Query): Promise<Task[]> {
+  async findAll(query: Query): Promise<{ total_tasks: number; data: Task[] }> {
     const resultPerPage = 10;
     const currentPage = Number(query.page) || 1;
     const skip = resultPerPage * (currentPage - 1);
@@ -35,7 +35,11 @@ export class TaskService {
       .find({ ...search })
       .limit(resultPerPage)
       .skip(skip);
-    return tasks;
+
+    // Get the total count of tasks
+    const totalTasks = await this.taskModel.countDocuments({ ...search });
+
+    return { total_tasks: totalTasks, data: tasks };
   }
 
   async create(task: Task): Promise<Task> {
