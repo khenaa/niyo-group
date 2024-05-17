@@ -45,9 +45,10 @@ export class JwtAuthGuard implements CanActivate {
       if (!decoded || typeof decoded !== 'object' || !('id' in decoded)) {
         throw new JsonWebTokenError('Invalid token payload');
       }
+
       // attach decoded user information to request object
       request.user = decoded;
-      return true; // Access granted
+      return true;
     } catch (error) {
       if (error instanceof TokenExpiredError) {
         throw new UnauthorizedException('Token has expired');
