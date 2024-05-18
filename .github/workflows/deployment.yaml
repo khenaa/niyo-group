@@ -1,0 +1,57 @@
+name: Deploy Niyo Group App to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run build
+        run: npm run build
+
+      - name: Copy files via SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          rsync -avz --delete-after \
+            --exclude 'node_modules' \
+            --exclude '.git' \
+            ./ $SERVER_USER@$SERVER_IP:$PROJECT_PATH
+
+      - name: Install dependencies on server
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd $PROJECT_PATH && npm install"
+
+      - name: Restart PM2
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd $PROJECT_PATH && pm2 restart all || pm2 start dist/main.js --name 'niyogroup'"
