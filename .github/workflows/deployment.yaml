@@ -18,27 +18,12 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run build
-        run: npm run build
-
-      - name: Copy files via SSH
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+      - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-
-          rsync -avz --delete-after \
-            --exclude 'node_modules' \
-            --exclude '.git' \
-            ./ $SERVER_USER@$SERVER_IP:$PROJECT_PATH
+          echo -e "Host ec2-host\n\tHostName 3.69.233.223\n\tUser ubuntu\n\tIdentityFile ~/.ssh/id_rsa\n\tStrictHostKeyChecking no" > ~/.ssh/config
 
       - name: Install dependencies on server
         env:
@@ -48,10 +33,24 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd $PROJECT_PATH && npm install"
 
-      - name: Restart PM2
+      - name: SSH and Echo Greeting
+        run:
+          ssh ec2-host "echo 'Hello from EC2!'; hostname; uptime"
+          # This command SSHs into the EC2 host, prints a greeting, the hostname, and uptime.
+
+      - name: SSH and Change Directory
+        run:
+          ssh ec2-host "cd /home/ubuntu/niyo-group; echo 'Now in the desired directory'; hostname; uptime"
+          # This command SSHs into the EC2 host, changes directory, and prints the status.
+
+      - name: Install dependencies, build and restart PM2 on server
         env:
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
+          PROJECT_PATH: /home/ubuntu/niyo-group
         run: |
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd $PROJECT_PATH && pm2 restart all || pm2 start dist/main.js --name 'niyogroup'"
+          ssh ec2-host << 'EOF'
+            cd $PROJECT_PATH
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart all || pm2 start dist/main.js --name 'niyogroup-app'
+          EOF
