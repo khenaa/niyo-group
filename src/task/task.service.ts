@@ -19,7 +19,7 @@ export class TaskService {
   ) {}
 
   async findAll(query: Query): Promise<{ total_tasks: number; data: Task[] }> {
-    const resultPerPage = 10;
+    const resultPerPage = 4;
     const currentPage = Number(query.page) || 1;
     const skip = resultPerPage * (currentPage - 1);
 
@@ -36,7 +36,7 @@ export class TaskService {
       .limit(resultPerPage)
       .skip(skip);
 
-    // Get the total count of tasks
+    // get the total number of tasks
     const totalTasks = await this.taskModel.countDocuments({ ...search });
 
     return { total_tasks: totalTasks, data: tasks };
