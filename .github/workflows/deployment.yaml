@@ -19,6 +19,36 @@ jobs:
           node-version: '18.x'
 
       - name: Setup SSH key
+        env:
+          MY_KEY: |
+            -----BEGIN RSA PRIVATE KEY-----
+            MIIEowIBAAKCAQEAyZbWlKqQbBiOp5JNC72ZXrystOIS4IhVRwphUN9BQ+dZoxDI
+            JOZnfA9zZzXAxILION4O96SSuFRKkjmPger0wUIdjqU8jLzoHgOtPn7ZWGXt4w77
+            GQ0gC9kg13tZSAGamQhRvQK8dqedsokYT1JAK8p+/KpYXzOLsn3C3w0JQCjmRIyn
+            /eIqaMhGKE+2vSEqHPQZki7FIusHuxi2Gg8KFNxAG/VcgkGSNzsgAUo89QoxoE4z
+            Wl1L7RIaQALIAI+kk8O9WDvL7PHOdyi76bNRo7o7aRX9cAtIeS0FqlHt1toHom6+
+            ZLpCwanh3c3UIrs8D45830uOiQo1BtbH3U6SXwIDAQABAoIBADaWA5DKBsVeePJj
+            KT2un2MJz/JC7T2jbQQJiYRuj6ulb546Ixfq08bCIEuoQIR1rWXIq2DfTWNgX7js
+            oTFav9+82WgQ0i6B0JCgCj9L9ep730iGe/OynCTZLI1styZKWORrXkbCAOpYRNld
+            ShngecPh1zTvo3JT8NXqO+ROEV0vuuYyK+XQ9SuhYDrj90w7us1h2id95ADODHd/
+            qCzFmrurpJ+9QlvR9XOr6d9IhbH0zJLIIbhTN+LPlEThKfD3J/rbeRIZFZhTcZ5L
+            RnZ2rfE9x+5XQAQlEzVfWImeicZVjnNLwEjeoFvQ6eI7EnftMpSrbu7fJyEBKgy8
+            3ErTgaECgYEA6dM6ad+Mq4ZFxg1zFKKz5kBI4Uz0isEX+txUbnzB3t7OJzPlzrV2
+            8XT5dneYj5KVz3s+LbZrK8p4f1JbqcSVVlC04Ek35lP6u+VkypwtdcGzKS7UNGX/
+            747AT47aAtbS3UVJYwPvAGM9oStvpeGzO79JAt7YlHZ6t5FCjOGrGXkCgYEA3LT9
+            2bcXOD9naSoBj324F1P17FexGpPhkrgalFp8AIVy/Ktx/nqH9mVG63ms/T0kdPZI
+            tUg98cUvtE+kE6w5MEGQz+EyWjH6l94QnoCpBeu5yi71fyFXNRq+N+WHga3lr7Qa
+            Bjpogu6pkQ+LcE9J63Suj0oxSCSAgDr/SKJf7JcCgYAqra1Jyc3pONbfcXEB4Tio
+            3C7xQJSaBuiTl0ep6weP4GcMbMKTWjfdlpY581ZbTkwd1MbinRsuoQQhaSzl7cW8
+            PXrmPTcAyW9IgHRHLv51Mee7qpp8/ekbFpkvbEmKnx9Z192vPvaOwY5sLntwcaO/
+            UgjHh1lMr9tySgc1o7MRMQKBgGKh3/A0CoRwkV5GD3x4ypRiSTzd05/1BpHzBK3X
+            4iK5gLG6TK9VQv2yNQd20QA7GtfKWKPrLQOnA7KpBMJl7QjLxFOiaEY2n67O5s5u
+            4RpsRhM8+SlfVQG+edOxF+W0OTlUW2z9HUemMNFLCR2f0YEQHBKdLXj4FxU3SG7F
+            YejxAoGBAMUUGbj7lrjFB1jztNrRui/xbJ+7fC0IE+sOBcnh5oX3qYcvWm8IVt1w
+            BUvTmPLKxH7GiJAluRI3A8hKZhQWEh78VtGoR5kfbEkw0cnQrJCb3ivdutFV9LRy
+            BMKS5Jehzc3YUshXzxQ1kNmspcuEbfFyyLYtJX+c5b9SqdDpK2ou
+            -----END RSA PRIVATE KEY-----
+
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
