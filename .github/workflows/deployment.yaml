@@ -25,14 +25,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           echo -e "Host ec2-host\n\tHostName 3.69.233.223\n\tUser ubuntu\n\tIdentityFile ~/.ssh/id_rsa\n\tStrictHostKeyChecking no" > ~/.ssh/config
 
-      - name: Install dependencies on server
-        env:
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          PROJECT_PATH: ${{ secrets.PROJECT_PATH }}
-        run: |
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd $PROJECT_PATH && npm install"
-
       - name: SSH and Echo Greeting
         run:
           ssh ec2-host "echo 'Hello from EC2!'; hostname; uptime"
