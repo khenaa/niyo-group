@@ -20,7 +20,7 @@ jobs:
 
       - name: Setup SSH key
         env:
-          MY_KEY: |
+          SSH_PRIVATE_KEY: |
             -----BEGIN RSA PRIVATE KEY-----
             MIIEowIBAAKCAQEAyZbWlKqQbBiOp5JNC72ZXrystOIS4IhVRwphUN9BQ+dZoxDI
             JOZnfA9zZzXAxILION4O96SSuFRKkjmPger0wUIdjqU8jLzoHgOtPn7ZWGXt4w77
@@ -51,7 +51,7 @@ jobs:
 
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 --decode > ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE_KEY" | base64 --decode > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           echo -e "Host ec2-host\n\tHostName 3.69.233.223\n\tUser ubuntu\n\tIdentityFile ~/.ssh/id_rsa\n\tStrictHostKeyChecking no" > ~/.ssh/config
 
