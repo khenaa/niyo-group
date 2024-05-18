@@ -47,7 +47,7 @@ export class UserService {
   async login(loginDto: LoginDto): Promise<{ token: string; data: object }> {
     const { email, password } = loginDto;
 
-    // validate user exists
+    // validate user exist
     const user = await this.userModel.findOne({ email }).select('+password');
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
